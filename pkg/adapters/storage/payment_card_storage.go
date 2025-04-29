@@ -11,6 +11,7 @@ type PaymentCardStorage interface {
 	CreatePaymentCard(card *models.PaymentCard) error
 	GetPaymentCardByID(id uint) (*models.PaymentCard, error)
 	GetPaymentCardByNumber(number string) (*models.PaymentCard, error)
+	GetPaymentCardByHMAC(hmac string) (*models.PaymentCard, error)
 	GetPaymentCardsByAccountID(accountID uint) ([]models.PaymentCard, error)
 	GetPaymentCardsByClientID(clientID uint) ([]models.PaymentCard, error)
 	UpdatePaymentCard(card *models.PaymentCard) error
@@ -51,6 +52,16 @@ func (r *PaymentCardStorageImpl) GetPaymentCardByNumber(number string) (*models.
 	err := r.db.Where("card_number = ?", number).First(&card).Error
 	if err != nil {
 		return nil, err
+	}
+	return &card, nil
+}
+
+// GetPaymentCardByHMAC находит платежную карту по HMAC номера карты
+func (r *PaymentCardStorageImpl) GetPaymentCardByHMAC(hmac string) (*models.PaymentCard, error) {
+	var card models.PaymentCard
+	err := r.db.Where("card_number_hmac = ?", hmac).First(&card).Error
+	if err != nil {
+		return nil, fmt.Errorf("карта с указанным HMAC не найдена: %v", err)
 	}
 	return &card, nil
 }
