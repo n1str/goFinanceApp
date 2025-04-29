@@ -1,0 +1,250 @@
+### Тестирование API FinanceSystem
+
+### Важное примечание:
+# 1. Сначала выполните запрос на регистрацию (1)
+# 2. Затем выполните запрос на аутентификацию (2)
+# 3. Скопируйте полученный токен из ответа и обновите переменную @token ниже
+# 4. После этого можно выполнять остальные запросы
+
+### Конфигурация
+@host = http://localhost:8080/api
+# Заменить на токен, полученный после успешного входа в систему
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRJZCI6NCwibG9naW4iOiJpdmFuMTIzNDUiLCJleHAiOjE3NDU5NjI1Nzh9.coma051qAJ8lLJtl_E48u_PXkDDLW_NDRl1yc6Blzms
+
+### 1. Регистрация нового клиента
+# @name register
+POST {{host}}/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Иван Иванов",
+  "loginName": "ivan12345",
+  "contact": "ivan12345@example.com",
+  "password": "securePassword123"
+}
+
+### 2. Аутентификация (вход в систему)
+# @name login
+POST {{host}}/auth/login
+Content-Type: application/json
+
+{
+  "loginName": "ivan12345",
+  "password": "securePassword123"
+}
+
+# После выполнения этого запроса скопируйте токен из ответа и обновите переменную @token выше
+
+### 3. Получение статуса аутентификации
+GET {{host}}/auth/status
+Authorization: Bearer {{token}}
+
+### 4. Получение профиля клиента
+GET {{host}}/auth/profile
+Authorization: Bearer {{token}}
+
+### 5. Создание финансового счета
+POST {{host}}/accounts
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Основной счет",
+  "initialFunds": 1000
+}
+
+### 6. Получение списка счетов
+GET {{host}}/accounts
+Authorization: Bearer {{token}}
+
+### 7. Получение информации о конкретном счете
+GET {{host}}/accounts/1
+Authorization: Bearer {{token}}
+
+### 8. Пополнение счета
+POST {{host}}/accounts/1/deposit
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "amount": 5000,
+  "details": "Пополнение счета"
+}
+
+### 9. Снятие средств со счета
+POST {{host}}/accounts/1/withdraw
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "amount": 1000,
+  "details": "Снятие средств"
+}
+
+### 10. Перевод между счетами
+POST {{host}}/accounts/transfer
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "sourceAccountID": 1,
+  "targetAccountID": 2,
+  "amount": 500,
+  "details": "Перевод средств"
+}
+
+### 11. Получение истории операций по счету
+GET {{host}}/accounts/1/operations
+Authorization: Bearer {{token}}
+
+### 12. Создание платежной карты
+POST {{host}}/cards
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "accountId": 1,
+  "cardholderName": "IVAN IVANOV"
+}
+
+### 13. Получение списка карт
+GET {{host}}/cards
+Authorization: Bearer {{token}}
+
+### 14. Получение информации о конкретной карте
+GET {{host}}/cards/1
+Authorization: Bearer {{token}}
+
+### 15. Блокировка карты
+POST {{host}}/cards/1/block
+Authorization: Bearer {{token}}
+
+### 16. Разблокировка карты
+POST {{host}}/cards/1/unblock
+Authorization: Bearer {{token}}
+
+### 17. Валидация карты
+POST {{host}}/cards/validate
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "cardNumber": "9307748860578198",
+  "expirationDate": "04/30",
+  "cvv": "750"
+}
+
+### 18. Оформление кредита
+POST {{host}}/loans
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "accountId": 1,
+  "amount": 775777,
+  "term": 12,
+  "purpose": "Ремонт"
+}
+
+### 19. Получение списка кредитов
+GET {{host}}/loans
+Authorization: Bearer {{token}}
+
+### 20. Получение информации о конкретном кредите
+GET {{host}}/loans/8
+Authorization: Bearer {{token}}
+
+### 21. Обновить расчеты ежемесячных платежей по всем займам
+PUT {{host}}/loans/update-payments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{}
+
+### 22. Получение графика платежей по кредиту
+GET {{host}}/loans/8/payment-plan
+Authorization: Bearer {{token}}
+
+### 23. Внесение платежа по кредиту
+POST {{host}}/loans/1/payment
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "amount": 4500
+}
+
+### 24. Расчет параметров кредита перед оформлением
+POST {{host}}/loans/calculate
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "amount": 100000,
+  "term": 24,
+  "purpose": "Личные цели"
+}
+
+### 25. Получение аналитики счетов
+GET {{host}}/analytics/accounts
+Authorization: Bearer {{token}}
+
+### 26. Получение отчета по расходам за период
+POST {{host}}/analytics/report
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "startDate": "2025-03-01",
+  "endDate": "2025-04-28"
+}
+
+### 27. Получение ключевой ставки ЦБ
+GET {{host}}/external/key-rate
+Authorization: Bearer {{token}}
+
+### 28. Получение истории ключевой ставки
+POST {{host}}/external/key-rate/history
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "startDate": "2024-01-01",
+  "endDate": "2025-04-28"
+}
+
+### 29. Получение курса валюты USD
+GET {{host}}/external/currency/USD
+Authorization: Bearer {{token}}
+
+### 30. Получение курса валюты EUR
+GET {{host}}/external/currency/EUR
+Authorization: Bearer {{token}}
+
+### 31. Получение курса валюты CNY
+GET {{host}}/external/currency/CNY
+Authorization: Bearer {{token}}
+
+### 32. Прогнозирование баланса на 30 дней вперед
+GET {{host}}/predictions/clients/4/predict-balance?days=30
+Authorization: Bearer {{token}}
+
+### 33. Прогнозирование баланса на 90 дней вперед
+GET {{host}}/predictions/clients/4/predict-balance?days=90
+Authorization: Bearer {{token}}
+
+### 34. Получение коэффициента долговой нагрузки клиента
+GET {{host}}/predictions/clients/4/debt-ratio
+Authorization: Bearer {{token}}
+
+### 35. Получение анализа расходов по категориям
+GET {{host}}/analytics/spending
+Authorization: Bearer {{token}}
+
+### 36. Получение финансового прогноза
+GET {{host}}/analytics/forecast
+Authorization: Bearer {{token}}
+
+### 37. Получение сводного отчета по клиенту
+GET {{host}}/analytics/summary
+Authorization: Bearer {{token}}

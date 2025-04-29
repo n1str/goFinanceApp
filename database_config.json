@@ -1,0 +1,8 @@
+{
+  "type": "sqlite",
+  "host": "localhost",
+  "port": 0,
+  "username": "",
+  "password": "",
+  "dbname": "finance_system.db"
+}
